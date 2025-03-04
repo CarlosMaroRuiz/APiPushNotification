@@ -30,10 +30,10 @@ def create_app():
     # Inicializar conexión a MongoDB
     init_db(app)
     
-    # Configurar middleware (CORS, autenticación, etc)
+  
     configure_middleware(app)
     
-    # Registrar blueprints
+    # blueprint
     api_prefix = app.config.get('API_PREFIX', '/api')
     app.register_blueprint(auth_bp, url_prefix=f"{api_prefix}/auth")
     app.register_blueprint(orders_bp, url_prefix=f"{api_prefix}/orders")
