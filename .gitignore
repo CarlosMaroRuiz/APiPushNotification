@@ -1,0 +1,13 @@
+# Entorno virtual
+venv/
+
+# Credenciales
+deliversurimbo-firebase-adminsdk-fbsvc-e7d73aeff9.json
+.env
+
+# Archivos de logs
+*.log
+
+# Archivos de caché de Python
+__pycache__/
+*.py[cod]
