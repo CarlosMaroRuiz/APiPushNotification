@@ -17,7 +17,6 @@ def validate_schema(schema_class):
         def wrapper(*args, **kwargs):
             # Crear instancia del esquema
             schema = schema_class()
-            
             # Obtener datos de la petición según el método
             if request.method == 'GET':
                 data = request.args.to_dict()
@@ -38,6 +37,7 @@ def validate_schema(schema_class):
                 return f(*args, **kwargs)
             
             except ValidationError as err:
+                print(err)
                 # Devolver errores de validación
                 return jsonify({
                     "error": "Error de validación",

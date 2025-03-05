@@ -6,41 +6,41 @@ from features.orders.models import Order
 from features.auth.services import get_user_info
 from features.notifications.services import send_notification_to_all_couriers
 
-
+# Configurar logger
 logger = logging.getLogger(__name__)
 
-def create_order(user_id, notes):
+def create_order(user_id, notes, address):
     """
     Crea un nuevo pedido y envía notificaciones a los repartidores disponibles.
     
     Args:
         user_id (str): ID del usuario que hace el pedido.
         notes (str): Notas/descripción del pedido.
+        address (str): Dirección de entrega del pedido.
     
     Returns:
         dict: Datos del pedido creado o None si hay error.
     """
     try:
         db = get_db()
-        
-        
+
         user_id_obj = ObjectId(user_id)
         
-   
+     
         user_info = get_user_info(user_id)
         if not user_info:
             logger.error(f"No se pudo obtener información del usuario {user_id}")
             return None
         
-
+       
         user_data = {
             "name": user_info.get("name", ""),
             "phone": user_info.get("phone", ""),
             "email": user_info.get("email", "")
         }
         
-       
-        order = Order(user_id_obj, notes, user_data)
+        # Crear nuevo pedido
+        order = Order(user_id_obj, notes, address, user_data)
         order_dict = order.to_dict()
         
         # Insertar en la base de datos
@@ -73,7 +73,7 @@ def create_order(user_id, notes):
             
             logger.info(f"Notificación enviada a {couriers_notified} repartidores para el pedido {order_id}")
         except Exception as e:
-       
+            # Si hay un error al enviar notificaciones, continuamos y solo lo registramos
             logger.error(f"Error al enviar notificaciones a repartidores: {str(e)}")
         
         return Order.serialize_for_api(order_dict)

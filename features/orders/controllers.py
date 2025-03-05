@@ -36,7 +36,8 @@ def create_order_controller(validated_data):
     
     result = create_order(
         str(g.user_id),
-        validated_data['notes']
+        validated_data['notes'],
+        validated_data['address']  # Añadir el parámetro de dirección
     )
     
     if result:

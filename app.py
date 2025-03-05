@@ -4,6 +4,8 @@ from core.firebase_admin import init_firebase
 from features.auth.routes import auth_bp
 from features.orders.routes import orders_bp
 from features.notifications.routes import notifications_bp
+from features.history.routes import history_bp
+
 from core.middleware import configure_middleware
 import logging
 import os
@@ -38,6 +40,7 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix=f"{api_prefix}/auth")
     app.register_blueprint(orders_bp, url_prefix=f"{api_prefix}/orders")
     app.register_blueprint(notifications_bp, url_prefix=f"{api_prefix}/notifications")
+    app.register_blueprint(history_bp, url_prefix=f"{app.config['API_PREFIX']}/history")
     
   
     @app.route('/')

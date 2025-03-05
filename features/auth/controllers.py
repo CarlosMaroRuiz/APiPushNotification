@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 @validate_schema(RegisterUserSchema)
 def register_user_controller(validated_data):
+    print("entro")
     """
     Registra un nuevo usuario.
     
@@ -28,7 +29,6 @@ def register_user_controller(validated_data):
     
     if result:
         return jsonify({
-            "message": "Usuario registrado correctamente",
             "user": result
         }), 201
     else:
@@ -84,9 +84,7 @@ def login_user_controller(validated_data):
     
     if token and user_data:
         return jsonify({
-            "message": "Inicio de sesión exitoso",
-            "token": token,
-            "user": user_data
+            "access_token": token,
         }), 200
     else:
         return jsonify({

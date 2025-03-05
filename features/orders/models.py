@@ -8,6 +8,7 @@ class Order:
     Attributes:
         user_id (ObjectId): ID del usuario que realizó el pedido.
         notes (str): Descripción o notas del pedido.
+        address (str): Dirección de entrega del pedido.
         user_info (dict): Información del usuario (nombre, teléfono, email).
         status (str): Estado actual del pedido (pending, processing, completed).
         courier_id (ObjectId): ID del repartidor asignado (si existe).
@@ -22,17 +23,19 @@ class Order:
     STATUS_PROCESSING = "processing"
     STATUS_COMPLETED = "completed"
     
-    def __init__(self, user_id, notes, user_info=None):
+    def __init__(self, user_id, notes, address, user_info=None):
         """
         Inicializa un nuevo pedido.
         
         Args:
             user_id (ObjectId): ID del usuario que realiza el pedido.
             notes (str): Descripción o notas del pedido.
+            address (str): Dirección de entrega del pedido.
             user_info (dict, optional): Información del usuario (nombre, teléfono, email).
         """
         self.user_id = user_id
         self.notes = notes
+        self.address = address
         self.user_info = user_info or {}
         self.status = self.STATUS_PENDING  # Estado inicial: pendiente
         self.courier_id = None  # ID del repartidor (se asigna cuando un repartidor toma el pedido)
@@ -52,6 +55,7 @@ class Order:
         return {
             "user_id": self.user_id,
             "notes": self.notes,
+            "address": self.address,
             "user_info": self.user_info,
             "status": self.status,
             "courier_id": self.courier_id,
@@ -79,6 +83,7 @@ class Order:
         order = cls(
             user_id=data.get("user_id"),
             notes=data.get("notes"),
+            address=data.get("address"),
             user_info=data.get("user_info", {})
         )
         order.status = data.get("status", cls.STATUS_PENDING)

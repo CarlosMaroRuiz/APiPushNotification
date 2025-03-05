@@ -39,7 +39,6 @@ def register_user(email, name, phone, password, fcm_token):
         # -->Creamos un usuario
         user = User(email, name, phone, password_hash, fcm_token)
         user_dict = user.to_dict()
-        
         #Insert one nos permite insertar solo una entidad a nuesta BD
         result = db.users.insert_one(user_dict)
         user_dict['_id'] = result.inserted_id
