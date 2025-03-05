@@ -21,6 +21,8 @@ def create_order(user_id, notes, address):
     Returns:
         dict: Datos del pedido creado o None si hay error.
     """
+    print("SSSSSSSSSSSSSSSSSSSSSSSs")
+    print(notes,address)
     try:
         db = get_db()
 

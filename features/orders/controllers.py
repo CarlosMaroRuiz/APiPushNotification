@@ -28,7 +28,7 @@ def create_order_controller(validated_data):
     Returns:
         Response: Respuesta JSON con el resultado.
     """
-    # Solo los usuarios pueden crear pedidos
+    print("controllller")
     if g.role != 'user':
         return jsonify({
             "error": "Solo los usuarios pueden crear pedidos"
@@ -39,10 +39,9 @@ def create_order_controller(validated_data):
         validated_data['notes'],
         validated_data['address']  # Añadir el parámetro de dirección
     )
-    
+    print()
     if result:
         return jsonify({
-            "message": "Pedido creado correctamente",
             "order": result
         }), 201
     else:

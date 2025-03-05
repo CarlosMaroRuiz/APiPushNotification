@@ -12,8 +12,8 @@ from features.orders.controllers import (
 orders_bp = Blueprint('orders', __name__)
 
 # Rutas para crear y listar pedidos
-orders_bp.route('', methods=['POST'])(create_order_controller)
-orders_bp.route('', methods=['GET'])(get_orders_controller)
+orders_bp.route('/', methods=['POST'])(create_order_controller)
+orders_bp.route('/', methods=['GET'])(get_orders_controller)
 
 # Rutas para obtener pedidos pendientes (solo repartidores)
 orders_bp.route('/pending', methods=['GET'])(get_pending_orders_controller)
