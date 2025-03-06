@@ -63,7 +63,8 @@ def create_order(user_id, notes, address):
                 "order_id": str(order_id),
                 "type": "new_order"
             }
-            
+            print("messaging")
+            print(notification_data)
             # Enviar notificación a todos los repartidores disponibles
             couriers_notified = send_notification_to_all_couriers(
                 title, 

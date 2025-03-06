@@ -30,7 +30,7 @@ def register_user_controller(validated_data):
     if result:
         return jsonify({
             "user": result
-        }), 201
+        }), 200
     else:
         return jsonify({
             "error": "No se pudo registrar el usuario, verifique que el correo no esté en uso o que el token FCM sea válido"
@@ -40,7 +40,7 @@ def register_user_controller(validated_data):
 def register_courier_controller(validated_data):
     """
     Registra un nuevo repartidor.
-    
+     
     Args:
         validated_data (dict): Datos validados del esquema.
         
@@ -107,7 +107,8 @@ def login_courier_controller(validated_data):
         validated_data['password'],
         validated_data['fcm_token']
     )
-    
+    print("entrooo")
+    print(token)
     if token and courier_data:
         return jsonify({
             "message": "Inicio de sesión exitoso",

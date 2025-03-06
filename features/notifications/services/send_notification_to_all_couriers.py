@@ -2,8 +2,7 @@ import logging
 from datetime import datetime
 from core.database import get_db
 from features.notifications.models import Notification
-from core.firebase_admin import send_multicast_notification
-
+from core.firebase_admin import send_multicast_notification, send_notifications_individually
 
 logger = logging.getLogger(__name__)
 
@@ -25,11 +24,11 @@ def send_notification_to_all_couriers(title, body, data=None, notification_type=
         db = get_db()
         
         # Obtener todos los repartidores disponibles con token FCM válido
-        couriers = db.couriers.find({
+        couriers = list(db.couriers.find({
             "available": True,
             "active": True,
             "fcm_token": {"$ne": None}
-        })
+        }))
         
         # Filtrar repartidores y obtener tokens e IDs
         courier_tokens = []
@@ -40,6 +39,8 @@ def send_notification_to_all_couriers(title, body, data=None, notification_type=
                 courier_tokens.append(courier.get("fcm_token"))
                 courier_ids.append(courier["_id"])
         
+        logger.info(f"Found {len(courier_tokens)} available couriers with FCM tokens")
+        
         if not courier_tokens:
             logger.warning("No hay repartidores disponibles con token FCM válido")
             return 0
@@ -48,13 +49,19 @@ def send_notification_to_all_couriers(title, body, data=None, notification_type=
         notification_data = data or {}
         notification_data["type"] = notification_type
         if related_id:
-            notification_data["related_id"] = related_id
+            notification_data["related_id"] = str(related_id)
         
-        # Enviar notificación multicast
-        response = send_multicast_notification(courier_tokens, title, body, notification_data)
-        
+        # Primero intentamos con multicast
+        response = None
+        try:
+            response = send_multicast_notification(courier_tokens, title, body, notification_data)
+        except Exception as e:
+            logger.warning(f"Error al enviar notificación multicast: {str(e)}")
+            logger.info("Intentando enviar notificaciones individualmente...")
+            response = send_notifications_individually(courier_tokens, title, body, notification_data)
+            
         if not response:
-            logger.warning("Error al enviar notificación multicast")
+            logger.warning("Error al enviar notificaciones")
             return 0
         
         # Crear notificaciones en la base de datos para cada repartidor
@@ -79,7 +86,7 @@ def send_notification_to_all_couriers(title, body, data=None, notification_type=
         if notifications:
             db.notifications.insert_many(notifications)
         
-        success_count = response.success_count
+        success_count = getattr(response, 'success_count', 0)
         logger.info(f"Notificación enviada correctamente a {success_count} repartidores")
         return success_count
     

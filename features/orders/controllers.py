@@ -122,7 +122,7 @@ def get_pending_orders_controller():
     skip = int(request.args.get('skip', 0))
     
     result = get_pending_orders(limit, skip)
-    
+    print(result)
     return jsonify(result), 200
 
 @token_required
